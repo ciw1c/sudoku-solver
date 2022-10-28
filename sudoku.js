@@ -69,7 +69,7 @@ function solve_sudoku() {
   if (solve_sudoku_rec(0,0))
     print_sudoku();
   else
-    console.log('JODETE');
+    console.log('NO SOLUTION FOR THIS SUDOKU');
 }
 
 function is_possible(i,j,n) {
@@ -95,13 +95,12 @@ function solve_sudoku_rec(i,j) {
     return true;
   
   // Si estamos en posicion fija en el sudoku original, devolvemos siguiente pos
-  if (is_fixed(i,j))
+  if (is_fixed(i,j) || sudoku[i][j] != 0)
     return solve_sudoku_rec(i_next,j_next);
 
   // Probamos los números posibles
   for (let n=0; n<SIZE; n++) {
     if (is_possible(i,j,n)) {
-      console.log(i, j, n);
       sudoku[i][j] = (n+1);
       update_aux_structures(n,i,j,false);
       if (solve_sudoku_rec(i_next,j_next))
@@ -111,4 +110,25 @@ function solve_sudoku_rec(i,j) {
     }
   }
   return false;
+}
+
+function is_valid_digit(i,j,n) {
+  if (n < 1 || n > 9)
+    return false;
+  if (!is_possible(i,j,n-1))
+    return false;
+  if (sudoku[i][j] != 0) {
+    update_aux_structures(sudoku[i][j]-1,i,j,true);
+    sudoku[i][j] = 0;
+  }
+  update_aux_structures(n-1,i,j,false);
+  sudoku[i][j] = n;
+  return true;
+}
+
+function random_generate() {
+  //  Rellenar el sudoku con números aleatorios que tenga solución
+  //  Generar lista de todas las casillas
+  //  Mezclar lista de casillas
+  //  Vamos sacando casillas y eliminando el número si no es posible poner ningún otro más que el que está
 }
